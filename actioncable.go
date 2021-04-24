@@ -16,7 +16,6 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 		onWelcome: func() {
 		},
 	}
-
 	for _, opt := range opts {
 		opt(c)
 	}
@@ -26,10 +25,14 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 func (ac *Client) Start() error {
 	go ac.send()
 	if err := ac.receive(); err != nil {
-		ac.once.Do(func() { close(ac.quit) })
+		ac.Stop()
 		return err
 	}
 	return nil
+}
+
+func (ac *Client) Stop() {
+	ac.once.Do(func() { close(ac.quit) })
 }
 
 func WithLogger(logger *log.Logger) Option {

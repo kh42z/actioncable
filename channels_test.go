@@ -1,13 +1,12 @@
 package actioncable
 
 import (
-	"log"
 	"testing"
 )
 
 type ChannelMock struct {
 	Subscribed bool
-	Messaged bool
+	Messaged   bool
 }
 
 func (c *ChannelMock) OnSubscription(_ int) {
@@ -15,25 +14,24 @@ func (c *ChannelMock) OnSubscription(_ int) {
 }
 
 func (c *ChannelMock) OnMessage(_ []byte, _ int) {
-	log.Println("###############")
 	c.Messaged = true
 }
 
 func TestClient_RegisterChannelCallbacks(t *testing.T) {
 	tests := map[string]struct {
 		payload string
-		want  *ChannelMock
+		want    *ChannelMock
 	}{
-		"onSubscription":       {payload: "{\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":1}\",\"type\":\"confirm_subscription\"}",
+		"onSubscription": {payload: "{\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":1}\",\"type\":\"confirm_subscription\"}",
 			want: &ChannelMock{Subscribed: true, Messaged: false}},
-		"onMessage":       {payload: "{\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":7}\",\"message\":{\"content\":\"Some content?\"}}",
+		"onMessage": {payload: "{\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":7}\",\"message\":{\"content\":\"Some content?\"}}",
 			want: &ChannelMock{Subscribed: false, Messaged: true}},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			rw := &wsMock{
-				ReadLimit: 1,
+				ReadLimit:   1,
 				ReadPayload: []byte(tc.payload),
 			}
 			c := NewClient(rw)
@@ -49,4 +47,3 @@ func TestClient_RegisterChannelCallbacks(t *testing.T) {
 		})
 	}
 }
-
