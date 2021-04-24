@@ -3,6 +3,7 @@ package actioncable
 import (
 	"encoding/json"
 	"errors"
+	"log"
 )
 
 func (ac *Client) receive() error {
@@ -11,6 +12,8 @@ func (ac *Client) receive() error {
 		if err := ac.ws.ReadJSON(&event); err != nil {
 			return err
 		}
+
+		log.Println(">>>> ", event)
 		if len(event.Type) != 0 {
 			if err := ac.handleActionCableEvent(&event); err != nil {
 				return err
@@ -41,7 +44,7 @@ func (ac *Client) handleActionCableEvent(e *event) error {
 		return errors.New("actioncable: disconnect")
 	case "ping":
 	default:
-		ac.logger.Println("unknown internal type rcv:", e.Type)
+		ac.logger.Println("handleActionCable: unknown internal type ", e.Type)
 	}
 	return nil
 }

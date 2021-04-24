@@ -17,7 +17,6 @@ func (ac *Client) handleEvent(event *event) {
 	var i identifier
 	err := json.Unmarshal([]byte(event.Identifier), &i)
 	if err != nil {
-		ac.logger.Println("handleEvent : unable to unmarshal Identifier", i)
 		return
 	}
 	for name, e := range ac.channels {
