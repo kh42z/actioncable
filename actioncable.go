@@ -25,13 +25,13 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 func (ac *Client) Start() error {
 	go ac.send()
 	if err := ac.receive(); err != nil {
-		ac.Stop()
+		ac.stop()
 		return err
 	}
 	return nil
 }
 
-func (ac *Client) Stop() {
+func (ac *Client) stop() {
 	ac.once.Do(func() { close(ac.quit) })
 }
 

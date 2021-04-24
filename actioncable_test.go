@@ -4,17 +4,21 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"sync"
 )
 
 type wsMock struct {
-	NoRead		bool
+	NoRead       bool
 	ReadLimit    int
 	ReadPayload  []byte
 	WriteLimit   int
 	WritePayload []byte
+	sync.Mutex
 }
 
 func (ws *wsMock) ReadJSON(v interface{}) error {
+	ws.Lock()
+	defer ws.Unlock()
 	if ws.NoRead {
 		return nil
 	}
@@ -40,4 +44,11 @@ func (ws *wsMock) WriteJSON(v interface{}) error {
 		return errors.New("Done")
 	}
 	return nil
+}
+
+func (ws *wsMock) CancelRead()  {
+	ws.Lock()
+	defer ws.Unlock()
+	ws.NoRead = false
+	ws.ReadLimit = 0
 }
