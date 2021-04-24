@@ -12,7 +12,7 @@ func TestClient_SendMessage(t *testing.T) {
 		"plain": {name: "UserChannel",
 			id:      1,
 			content: "Hello",
-			want: "{\"command\":\"message\",\"data\":\"Hello\",\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":1}\"}"},
+			want:    "{\"command\":\"message\",\"data\":\"Hello\",\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":1}\"}"},
 	}
 
 	for name, tc := range tests {
