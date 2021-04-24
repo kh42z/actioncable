@@ -9,7 +9,7 @@ import (
 func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 	c := &Client{
 		ws:       ws,
-		emit:     make(chan *Message),
+		emit:     make(chan *message),
 		quit:     make(chan struct{}),
 		channels: make(map[string]ChannelCallbacker),
 		logger:   log.New(ioutil.Discard, "actionCable: ", log.LstdFlags),
@@ -46,7 +46,7 @@ func WithOnWelcome(fn func()) Option {
 
 type Client struct {
 	ws        JSONReadWriter
-	emit      chan *Message
+	emit      chan *message
 	quit      chan struct{}
 	channels  map[string]ChannelCallbacker
 	once      sync.Once

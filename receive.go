@@ -51,3 +51,8 @@ type event struct {
 	Type       string          `json:"type"`
 	Identifier string          `json:"identifier"`
 }
+
+type identifier struct {
+	Channel string `json:"channel"`
+	ID      int    `json:"id"`
+}
