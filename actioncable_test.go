@@ -46,7 +46,7 @@ func (ws *wsMock) WriteJSON(v interface{}) error {
 	return nil
 }
 
-func (ws *wsMock) CancelRead()  {
+func (ws *wsMock) CancelRead() {
 	ws.Lock()
 	defer ws.Unlock()
 	ws.NoRead = false
