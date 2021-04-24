@@ -3,7 +3,6 @@ package actioncable
 import (
 	"encoding/json"
 	"errors"
-	"log"
 )
 
 func (ac *Client) receive() error {
@@ -13,7 +12,6 @@ func (ac *Client) receive() error {
 			return err
 		}
 
-		log.Println(">>>> ", event)
 		if len(event.Type) != 0 {
 			if err := ac.handleActionCableEvent(&event); err != nil {
 				return err
