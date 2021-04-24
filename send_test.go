@@ -24,10 +24,10 @@ func TestClient_SendMessage(t *testing.T) {
 			c := NewClient(rw)
 			go c.Start()
 			c.SendMessage(tc.name, tc.id, tc.content)
-			rw.CancelRead()
 			if string(rw.WritePayload) != tc.want {
 				t.Errorf("expecting payload to be [%s] got [%s]", tc.want, rw.WritePayload)
 			}
+			rw.CancelRead()
 		})
 	}
 }

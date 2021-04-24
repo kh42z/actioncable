@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"sync"
+	"time"
 )
 
 type wsMock struct {
@@ -20,11 +21,12 @@ func (ws *wsMock) ReadJSON(v interface{}) error {
 	ws.Lock()
 	defer ws.Unlock()
 	if ws.NoRead {
+		time.Sleep(100 * time.Millisecond)
 		return nil
 	}
 	err := json.Unmarshal(ws.ReadPayload, v)
 	if err != nil {
-		log.Fatal("ReadJSON: unable to json: ", err)
+		return err
 	}
 	ws.ReadLimit--
 	if ws.ReadLimit < 0 {
