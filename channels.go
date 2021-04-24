@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-type Identifier struct {
+type identifier struct {
 	Channel string `json:"channel"`
 	ID      int    `json:"id"`
 }
@@ -19,7 +19,7 @@ func (ac *Client) RegisterChannelCallbacks(name string, event ChannelCallbacker)
 }
 
 func (ac *Client) handleEvent(event *Event) {
-	var i Identifier
+	var i identifier
 	err := json.Unmarshal([]byte(event.Identifier), &i)
 	if err != nil {
 		ac.logger.Println("handleEvent : unable to unmarshal Identifier", i)

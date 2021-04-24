@@ -4,23 +4,12 @@ import (
 	"encoding/json"
 )
 
-type Command struct {
-	Channel string `json:"channel"`
-	ID      int    `json:"id"`
-}
-
-type Message struct {
-	Command    string `json:"command"`
-	Data       string `json:"data,omitempty"`
-	Identifier string `json:"identifier"`
-}
-
 func (ac *Client) SendMessage(channelName string, channelID int, content string) {
-	data, _ := json.Marshal(Command{
+	data, _ := json.Marshal(command{
 		Channel: channelName,
 		ID:      channelID,
 	})
-	ac.emit <- &Message{
+	ac.emit <- &message{
 		Command:    "message",
 		Identifier: string(data),
 		Data:       content,
@@ -38,4 +27,15 @@ func (ac *Client) send() {
 			}
 		}
 	}
+}
+
+type command struct {
+	Channel string `json:"channel"`
+	ID      int    `json:"id"`
+}
+
+type message struct {
+	Command    string `json:"command"`
+	Data       string `json:"data,omitempty"`
+	Identifier string `json:"identifier"`
 }

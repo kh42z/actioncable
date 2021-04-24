@@ -7,7 +7,7 @@ import (
 
 func (ac *Client) receive() error {
 	for {
-		var event Event
+		var event event
 		if err := ac.ws.ReadJSON(&event); err != nil {
 			return err
 		}
@@ -21,12 +21,12 @@ func (ac *Client) receive() error {
 	}
 }
 
-func (ac *Client) handleActionCableEvent(e *Event) error {
+func (ac *Client) handleActionCableEvent(e *event) error {
 	switch e.Type {
 	case "welcome":
-		ac.onStartup()
+		ac.onWelcome()
 	case "confirm_subscription":
-		var i Identifier
+		var i identifier
 		err := json.Unmarshal([]byte(e.Identifier), &i)
 		if err != nil {
 			ac.logger.Println("handleActionCable: unable to unmarshal Identifier", i)
@@ -46,7 +46,7 @@ func (ac *Client) handleActionCableEvent(e *Event) error {
 	return nil
 }
 
-type Event struct {
+type event struct {
 	Message    json.RawMessage `json:"message"`
 	Type       string          `json:"type"`
 	Identifier string          `json:"identifier"`

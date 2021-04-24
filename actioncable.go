@@ -12,8 +12,8 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 		emit:     make(chan *Message),
 		quit:     make(chan struct{}),
 		channels: make(map[string]ChannelCallbacker),
-		logger:   log.New(ioutil.Discard, "ActionCable: ", log.LstdFlags),
-		onStartup: func() {
+		logger:   log.New(ioutil.Discard, "actionCable: ", log.LstdFlags),
+		onWelcome: func() {
 		},
 	}
 
@@ -38,9 +38,9 @@ func WithLogger(logger *log.Logger) Option {
 	}
 }
 
-func WithOnStartup(fn func()) Option {
+func WithOnWelcome(fn func()) Option {
 	return func(c *Client) {
-		c.onStartup = fn
+		c.onWelcome = fn
 	}
 }
 
@@ -51,7 +51,7 @@ type Client struct {
 	channels  map[string]ChannelCallbacker
 	once      sync.Once
 	logger    *log.Logger
-	onStartup func()
+	onWelcome func()
 }
 
 type JSONReadWriter interface {
