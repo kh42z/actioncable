@@ -5,7 +5,7 @@ import (
 )
 
 func (ac *Client) SendMessage(channelName string, channelID int, content string) {
-	data, _ := json.Marshal(command{
+	data, _ := json.Marshal(identifier{
 		Channel: channelName,
 		ID:      channelID,
 	})
@@ -27,11 +27,6 @@ func (ac *Client) send() {
 			}
 		}
 	}
-}
-
-type command struct {
-	Channel string `json:"channel"`
-	ID      int    `json:"id"`
 }
 
 type message struct {

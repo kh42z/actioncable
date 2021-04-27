@@ -21,7 +21,7 @@ func TestClient_SendMessage(t *testing.T) {
 				WriteLimit: 1,
 				NoRead:     true,
 			}
-			c := NewClient(rw, HandlerFunc(func(_ *Client, _ *Event) {}))
+			c := NewClient(rw)
 			go c.Run()
 			c.SendMessage(tc.name, tc.id, tc.content)
 			if string(rw.WritePayload) != tc.want {

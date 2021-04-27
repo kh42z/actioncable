@@ -7,7 +7,7 @@ import (
 
 func (ac *Client) receive() error {
 	for {
-		var event Event
+		var event event
 		if err := ac.ws.ReadJSON(&event); err != nil {
 			return err
 		}
@@ -16,15 +16,19 @@ func (ac *Client) receive() error {
 			if err := ac.handleInternalEvent(&event); err != nil {
 				return err
 			}
+		} else {
+			ac.handleEvent(&event)
 		}
-		ac.handler.Handle(ac, &event)
 	}
 }
 
-func (ac *Client) handleInternalEvent(e *Event) error {
+func (ac *Client) handleInternalEvent(e *event) error {
 	switch e.Type {
 	case "ping":
 	case "confirm_subscription":
+		if err := ac.handleSubscription(e); err != nil {
+			return err
+		}
 	case "welcome":
 	case "disconnect":
 		ac.exit()
@@ -35,13 +39,27 @@ func (ac *Client) handleInternalEvent(e *Event) error {
 	return nil
 }
 
-type Event struct {
-	Message    json.RawMessage `json:"message"`
-	Type       string          `json:"type"`
-	Identifier json.RawMessage `json:"identifier"`
+func (ac *Client) handleSubscription(e *event) error {
+	var i identifier
+	err := json.Unmarshal([]byte(e.Identifier), &i)
+	if err != nil {
+		return err
+	}
+	for name, e := range ac.channels {
+		if name == i.Channel {
+			e.OnSubscription(ac, i.ID)
+		}
+	}
+	return nil
 }
 
-type Identifier struct {
+type event struct {
+	Message    json.RawMessage `json:"message"`
+	Type       string          `json:"type"`
+	Identifier string          `json:"identifier"`
+}
+
+type identifier struct {
 	Channel string `json:"channel"`
 	ID      int    `json:"id"`
 }

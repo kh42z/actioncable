@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"sync"
+	"testing"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func (ws *wsMock) ReadJSON(v interface{}) error {
 	ws.Lock()
 	defer ws.Unlock()
 	if ws.NoRead {
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1000 * time.Millisecond)
 		return nil
 	}
 	err := json.Unmarshal(ws.ReadPayload, v)
@@ -53,4 +54,8 @@ func (ws *wsMock) CancelRead() {
 	defer ws.Unlock()
 	ws.NoRead = false
 	ws.ReadLimit = 0
+}
+
+func TestNewClient(t *testing.T) {
+	NewClient(&wsMock{}, WithLogger(&log.Logger{}))
 }

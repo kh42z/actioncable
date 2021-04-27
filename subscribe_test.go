@@ -20,7 +20,7 @@ func TestClient_Subscribe(t *testing.T) {
 				WriteLimit: 1,
 				NoRead:     true,
 			}
-			c := NewClient(rw, HandlerFunc(func(_ *Client, _ *Event) {}))
+			c := NewClient(rw)
 			go c.Run()
 			c.Subscribe("UserChannel", 1)
 			if string(rw.WritePayload) != tc.want {

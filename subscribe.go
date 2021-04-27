@@ -5,7 +5,7 @@ import (
 )
 
 func formatSubscribeMessage(channel string, ID int) *message {
-	data, _ := json.Marshal(command{
+	data, _ := json.Marshal(identifier{
 		Channel: channel,
 		ID:      ID,
 	})

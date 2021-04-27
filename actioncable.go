@@ -6,13 +6,13 @@ import (
 	"sync"
 )
 
-func NewClient(ws JSONReadWriter, h Handler, opts ...Option) *Client {
+func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 	c := &Client{
-		ws:      ws,
-		emit:    make(chan *message),
-		handler: h,
-		stop:    make(chan struct{}),
-		logger:  log.New(ioutil.Discard, "actionCable: ", log.LstdFlags),
+		ws:       ws,
+		emit:     make(chan *message),
+		channels: make(map[string]ChannelHandler),
+		stop:     make(chan struct{}),
+		logger:   log.New(ioutil.Discard, "actionCable: ", log.LstdFlags),
 	}
 	for _, opt := range opts {
 		opt(c)
@@ -40,12 +40,12 @@ func WithLogger(logger *log.Logger) Option {
 }
 
 type Client struct {
-	ws      JSONReadWriter
-	handler Handler
-	emit    chan *message
-	stop    chan struct{}
-	once    sync.Once
-	logger  *log.Logger
+	ws       JSONReadWriter
+	channels map[string]ChannelHandler
+	emit     chan *message
+	stop     chan struct{}
+	once     sync.Once
+	logger   *log.Logger
 }
 
 type JSONReadWriter interface {
