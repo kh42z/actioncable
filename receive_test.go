@@ -17,20 +17,23 @@ func TestClient_receive(t *testing.T) {
 	tests := map[string]struct {
 		payload string
 		want    *Event
+		error	string
 	}{
 		"welcome": {
 			payload: "{\"type\":\"welcome\"}",
-			want:    &Event{Type: "welcome"}},
+			want:    &Event{Type: "welcome"},
+			error:   "Done"},
 		"ping": {
 			payload: "{\"type\":\"ping\",\"message\":1619511683}",
 			want: &Event{
 				Type:    "ping",
-				Message: []byte("1619511683")}},
-		"message": {
-			payload: "{\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":7}\",\"message\": \"data\"}",
-			want: &Event{
-				Identifier: []byte("\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":7}\""),
-				Message:    []byte("\"data\"")}},
+				Message: []byte("1619511683")},
+			error: "Done",
+		},
+		"disconnect": {
+			payload: "{\"type\":\"disconnect\"}",
+			want:    nil,
+			error: "disconnect"},
 	}
 
 	for name, tc := range tests {
@@ -41,7 +44,7 @@ func TestClient_receive(t *testing.T) {
 			}
 			b := &Bot{}
 			c := NewClient(rw, b)
-			if err := c.Run(); err != nil && err.Error() != "Done" {
+			if err := c.Run(); err != nil && err.Error() != tc.error {
 				t.Fatal("got an unexpected error ", err)
 			}
 			if !reflect.DeepEqual(b.Event, tc.want) {

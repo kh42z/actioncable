@@ -28,7 +28,7 @@ func (ac *Client) handleInternalEvent(e *Event) error {
 	case "welcome":
 	case "disconnect":
 		ac.exit()
-		return errors.New("actioncable: disconnect")
+		return errors.New("disconnect")
 	default:
 		ac.logger.Println("handleActionCable: unknown internal type ", e.Type)
 	}
