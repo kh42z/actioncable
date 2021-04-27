@@ -6,15 +6,13 @@ import (
 	"sync"
 )
 
-func NewClient(ws JSONReadWriter, opts ...Option) *Client {
+func NewClient(ws JSONReadWriter, h Handler, opts ...Option) *Client {
 	c := &Client{
-		ws:       ws,
-		emit:     make(chan *message),
-		quit:     make(chan struct{}),
-		channels: make(map[string]ChannelCallbacker),
-		logger:   log.New(ioutil.Discard, "actionCable: ", log.LstdFlags),
-		onWelcome: func() {
-		},
+		ws:      ws,
+		emit:    make(chan *message),
+		handler: h,
+		stop:    make(chan struct{}),
+		logger:  log.New(ioutil.Discard, "actionCable: ", log.LstdFlags),
 	}
 	for _, opt := range opts {
 		opt(c)
@@ -22,17 +20,17 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 	return c
 }
 
-func (ac *Client) Start() error {
+func (ac *Client) Run() error {
 	go ac.send()
 	if err := ac.receive(); err != nil {
-		ac.stop()
+		ac.exit()
 		return err
 	}
 	return nil
 }
 
-func (ac *Client) stop() {
-	ac.once.Do(func() { close(ac.quit) })
+func (ac *Client) exit() {
+	ac.once.Do(func() { close(ac.stop) })
 }
 
 func WithLogger(logger *log.Logger) Option {
@@ -41,20 +39,13 @@ func WithLogger(logger *log.Logger) Option {
 	}
 }
 
-func WithOnWelcome(fn func()) Option {
-	return func(c *Client) {
-		c.onWelcome = fn
-	}
-}
-
 type Client struct {
-	ws        JSONReadWriter
-	emit      chan *message
-	quit      chan struct{}
-	channels  map[string]ChannelCallbacker
-	once      sync.Once
-	logger    *log.Logger
-	onWelcome func()
+	ws      JSONReadWriter
+	handler Handler
+	emit    chan *message
+	stop    chan struct{}
+	once    sync.Once
+	logger  *log.Logger
 }
 
 type JSONReadWriter interface {

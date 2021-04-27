@@ -7,53 +7,41 @@ import (
 
 func (ac *Client) receive() error {
 	for {
-		var event event
+		var event Event
 		if err := ac.ws.ReadJSON(&event); err != nil {
 			return err
 		}
 
 		if len(event.Type) != 0 {
-			if err := ac.handleActionCableEvent(&event); err != nil {
+			if err := ac.handleInternalEvent(&event); err != nil {
 				return err
 			}
-		} else {
-			ac.handleEvent(&event)
 		}
+		ac.handler.Handle(ac, &event)
 	}
 }
 
-func (ac *Client) handleActionCableEvent(e *event) error {
+func (ac *Client) handleInternalEvent(e *Event) error {
 	switch e.Type {
-	case "welcome":
-		ac.onWelcome()
-	case "confirm_subscription":
-		var i identifier
-		err := json.Unmarshal([]byte(e.Identifier), &i)
-		if err != nil {
-			ac.logger.Println("handleActionCable: unable to unmarshal Identifier", i)
-			return err
-		}
-		for name, e := range ac.channels {
-			if name == i.Channel {
-				e.OnSubscription(i.ID)
-			}
-		}
-	case "disconnect":
-		return errors.New("actioncable: disconnect")
 	case "ping":
+	case "confirm_subscription":
+	case "welcome":
+	case "disconnect":
+		ac.exit()
+		return errors.New("actioncable: disconnect")
 	default:
 		ac.logger.Println("handleActionCable: unknown internal type ", e.Type)
 	}
 	return nil
 }
 
-type event struct {
+type Event struct {
 	Message    json.RawMessage `json:"message"`
 	Type       string          `json:"type"`
-	Identifier string          `json:"identifier"`
+	Identifier json.RawMessage `json:"identifier"`
 }
 
-type identifier struct {
+type Identifier struct {
 	Channel string `json:"channel"`
 	ID      int    `json:"id"`
 }

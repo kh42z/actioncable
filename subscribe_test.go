@@ -10,8 +10,8 @@ func TestClient_Subscribe(t *testing.T) {
 		want    string
 	}{
 		"UserChannel 1": {name: "UserChannel",
-			id:      1,
-			want:    "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":1}\"}"},
+			id:   1,
+			want: "{\"command\":\"subscribe\",\"identifier\":\"{\\\"channel\\\":\\\"UserChannel\\\",\\\"id\\\":1}\"}"},
 	}
 
 	for name, tc := range tests {
@@ -20,8 +20,8 @@ func TestClient_Subscribe(t *testing.T) {
 				WriteLimit: 1,
 				NoRead:     true,
 			}
-			c := NewClient(rw)
-			go c.Start()
+			c := NewClient(rw, HandlerFunc(func(_ *Client, _ *Event) {}))
+			go c.Run()
 			c.Subscribe("UserChannel", 1)
 			if string(rw.WritePayload) != tc.want {
 				t.Errorf("expecting payload to be [%s] got [%s]", tc.want, rw.WritePayload)

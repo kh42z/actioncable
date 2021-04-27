@@ -19,7 +19,7 @@ func (ac *Client) SendMessage(channelName string, channelID int, content string)
 func (ac *Client) send() {
 	for {
 		select {
-		case <-ac.quit:
+		case <-ac.stop:
 			return
 		case m := <-ac.emit:
 			if err := ac.ws.WriteJSON(m); err != nil {
