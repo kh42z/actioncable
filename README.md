@@ -16,7 +16,6 @@ import (
 )
 
 func main() {
-	var err error
 	ws, _, err := websocket.DefaultDialer.Dial("ws://localhost:3000/cable", nil)
 	if err != nil {
 		log.Fatalln("unable to connect ", err)
