@@ -2,7 +2,7 @@ package actioncable
 
 import "testing"
 
-func TestClient_SendMessage(t *testing.T) {
+func TestClientSendMessage(t *testing.T) {
 	tests := map[string]struct {
 		name    string
 		id      int

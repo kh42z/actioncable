@@ -2,7 +2,7 @@ package actioncable
 
 import "testing"
 
-func TestClient_Subscribe(t *testing.T) {
+func TestClientSubscribe(t *testing.T) {
 	tests := map[string]struct {
 		name    string
 		id      int
@@ -33,7 +33,7 @@ func TestClient_Subscribe(t *testing.T) {
 	}
 }
 
-func TestClient_UnSubscribe(t *testing.T) {
+func TestClientUnSubscribe(t *testing.T) {
 	tests := map[string]struct {
 		name    string
 		id      int

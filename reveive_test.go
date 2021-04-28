@@ -4,33 +4,29 @@ import (
 	"testing"
 )
 
-func TestClient_receive(t *testing.T) {
+func TestClientReceive(t *testing.T) {
 	tests := map[string]struct {
-		payload string
+		payload  string
 		welcomed bool
-		want    string
+		want     string
 	}{
 		"unexpected type": {
-			payload: "{\"type\":\"unexpected\"}",
+			payload:  "{\"type\":\"unexpected\"}",
 			welcomed: false,
-			want:    "Done"},
+			want:     "Done"},
 		"ping": {
-			payload: "{\"type\":\"ping\",\"message\":1619511683}",
+			payload:  "{\"type\":\"ping\",\"message\":1619511683}",
 			welcomed: false,
-			want:    "Done",
+			want:     "Done",
 		},
 		"disconnect": {
-			payload: "{\"type\":\"disconnect\"}",
+			payload:  "{\"type\":\"disconnect\"}",
 			welcomed: false,
-			want:    "disconnect"},
+			want:     "disconnect"},
 		"unexpected first message": {
-			payload: "{\"type\":\"hello\"}",
+			payload:  "{\"type\":\"hello\"}",
 			welcomed: true,
-			want:    "expecting welcome type message"},
-		"invalid identifier": {
-			payload: "{\"identifier\":\"{\\\"invalid\\\":\\\"ChatChannel\\\",\\\"id\\\":7}\",\"message\":{\"action\":\"message\",\"content\":\"Test\"}}",
-			welcomed: false,
-			want:    "Done"},
+			want:     "expecting welcome type message"},
 	}
 
 	for name, tc := range tests {
