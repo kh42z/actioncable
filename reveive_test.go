@@ -27,6 +27,10 @@ func TestClient_receive(t *testing.T) {
 			payload: "{\"type\":\"hello\"}",
 			welcomed: true,
 			want:    "expecting welcome type message"},
+		"invalid identifier": {
+			payload: "{\"identifier\":\"{\\\"invalid\\\":\\\"ChatChannel\\\",\\\"id\\\":7}\",\"message\":{\"action\":\"message\",\"content\":\"Test\"}}",
+			welcomed: false,
+			want:    "Done"},
 	}
 
 	for name, tc := range tests {

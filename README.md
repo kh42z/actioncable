@@ -21,7 +21,7 @@ func main() {
 		log.Fatalln("unable to connect ", err)
 	}
 	defer ws.Close()
-	c := actioncable.NewClient(ws, actioncable.WithLogger(&log.Logger{}))
+	c := actioncable.NewClient(ws))
 	c.AddChannelHandler("UserChannel", &UserChannel{})
 	go func() {
 		c.Subscribe("UserChannel", 1)
