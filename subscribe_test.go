@@ -24,6 +24,7 @@ func TestClient_Subscribe(t *testing.T) {
 			c := NewClient(rw)
 			go c.Run()
 			c.Subscribe("UserChannel", 1)
+			rw.WaitForWrite()
 			if string(rw.WritePayload) != tc.want {
 				t.Errorf("expecting payload to be [%s] got [%s]", tc.want, rw.WritePayload)
 			}
@@ -54,6 +55,7 @@ func TestClient_UnSubscribe(t *testing.T) {
 			c := NewClient(rw)
 			go c.Run()
 			c.Unsubscribe("UserChannel", 1)
+			rw.WaitForWrite()
 			if string(rw.WritePayload) != tc.want {
 				t.Errorf("expecting payload to be [%s] got [%s]", tc.want, rw.WritePayload)
 			}

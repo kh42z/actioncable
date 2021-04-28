@@ -50,7 +50,6 @@ func (ws *wsWriteMock) ReadJSON(v interface{}) error {
 		return errors.New("Done")
 	}
 	json.Unmarshal([]byte("{\"type\":\"welcome\"}"), v)
-	time.Sleep(1000 * time.Millisecond)
 	return nil
 }
 
@@ -67,10 +66,19 @@ func (ws *wsWriteMock) WriteJSON(v interface{}) error {
 	return nil
 }
 
+func (ws *wsWriteMock) WaitForWrite() {
+	for {
+		if len(ws.WritePayload) > 0 {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+}
+
 func (ws *wsWriteMock) CancelRead() {
 	ws.Lock()
 	defer ws.Unlock()
-	ws.Over = false
+	ws.Over = true
 }
 
 func TestNewClient(t *testing.T) {

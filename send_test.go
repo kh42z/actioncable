@@ -24,6 +24,7 @@ func TestClient_SendMessage(t *testing.T) {
 			c := NewClient(rw)
 			go c.Run()
 			c.SendMessage(tc.name, tc.id, tc.content)
+			rw.WaitForWrite()
 			if string(rw.WritePayload) != tc.want {
 				t.Errorf("expecting payload to be [%s] got [%s]", tc.want, rw.WritePayload)
 			}

@@ -1,4 +1,4 @@
-name: action-cable
+name: actioncable
 on:
   push:
     branches:
