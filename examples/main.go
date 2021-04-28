@@ -1,7 +1,7 @@
 package main
 
 import (
-	actioncable "actioncable-client"
+	"github/kh42z/actioncable"
 	"github.com/gorilla/websocket"
 	"log"
 )

@@ -10,7 +10,7 @@ A Go Client for Rails websocket: ActionCable!
 package main
 
 import (
-	actioncable "actioncable"
+	"github/kh42z/actioncable"
 	"github.com/gorilla/websocket"
 	"log"
 )
