@@ -17,11 +17,12 @@ func (ac *Client) handleEvent(event *event) {
 	var i identifier
 	err := json.Unmarshal([]byte(event.Identifier), &i)
 	if err != nil {
+		ac.logger.Println("handleEvent: ", err)
 		return
 	}
 	for name, e := range ac.channels {
 		if name == i.Channel {
-			e.MessageHandler(ac, []byte(event.Message), i.ID)
+			e.MessageHandler(ac, event.Message, i.ID)
 		}
 	}
 }
