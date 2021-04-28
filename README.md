@@ -24,20 +24,22 @@ func main() {
 	defer ws.Close()
 	c := actioncable.NewClient(ws, actioncable.WithLogger(&log.Logger{}))
 	c.AddChannelHandler("UserChannel", &UserChannel{})
-	go c.Subscribe("UserChannel", 1)
+	go func() {
+		c.Subscribe("UserChannel", 1)
+	}()
 	if err := c.Run(); err != nil {
 		log.Fatal("Actioncable: ", err)
 	}
 }
 
-func (u *UserChannel) OnSubscription(c *actioncable.Client, id int) {
+func (u *UserChannel) SubscriptionHandler(c *actioncable.Client, id int) {
 	log.Println("UserChannel, successfully subscribed to id: ", id)
 	c.SendMessage("UserChannel", id, "Hello!")
 }
 
-func (u *UserChannel) OnMessage(_ *actioncable.Client, content []byte, id int) {
+func (u *UserChannel) MessageHandler(_ *actioncable.Client, content []byte, id int) {
 	log.Printf("UserChannel_%d: <%s>", id, content)
 }
 
-type UserChannel struct {}
+type UserChannel struct{}
 ```

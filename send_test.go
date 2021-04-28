@@ -17,9 +17,9 @@ func TestClient_SendMessage(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			rw := &wsMock{
+			rw := &wsWriteMock{
 				WriteLimit: 1,
-				NoRead:     true,
+				Over:       false,
 			}
 			c := NewClient(rw)
 			go c.Run()

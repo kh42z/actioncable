@@ -5,8 +5,8 @@ import (
 )
 
 type ChannelHandler interface {
-	OnSubscription(*Client, int)
-	OnMessage(*Client, []byte, int)
+	SubscriptionHandler(*Client, int)
+	MessageHandler(*Client, []byte, int)
 }
 
 func (ac *Client) AddChannelHandler(name string, event ChannelHandler) {
@@ -21,7 +21,7 @@ func (ac *Client) handleEvent(event *event) {
 	}
 	for name, e := range ac.channels {
 		if name == i.Channel {
-			e.OnMessage(ac, []byte(event.Message), i.ID)
+			e.MessageHandler(ac, []byte(event.Message), i.ID)
 		}
 	}
 }

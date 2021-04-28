@@ -29,7 +29,6 @@ func (ac *Client) handleInternalEvent(e *event) error {
 		if err := ac.handleSubscription(e); err != nil {
 			return err
 		}
-	case "welcome":
 	case "disconnect":
 		ac.exit()
 		return errors.New("disconnect")
@@ -47,8 +46,19 @@ func (ac *Client) handleSubscription(e *event) error {
 	}
 	for name, e := range ac.channels {
 		if name == i.Channel {
-			e.OnSubscription(ac, i.ID)
+			e.SubscriptionHandler(ac, i.ID)
 		}
+	}
+	return nil
+}
+
+func (ac *Client) waitWelcome() error {
+	var event event
+	if err := ac.ws.ReadJSON(&event); err != nil {
+		return err
+	}
+	if len(event.Type) == 0 || event.Type != "welcome" {
+		return errors.New("expecting welcome type message")
 	}
 	return nil
 }

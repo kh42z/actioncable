@@ -10,11 +10,11 @@ type ChannelHandlerStub struct {
 	Messaged   bool
 }
 
-func (c *ChannelHandlerStub) OnSubscription(_ *Client, id int) {
+func (c *ChannelHandlerStub) SubscriptionHandler(_ *Client, id int) {
 	c.Subscribed = true
 }
 
-func (c *ChannelHandlerStub) OnMessage(_ *Client, _ []byte, _ int) {
+func (c *ChannelHandlerStub) MessageHandler(_ *Client, _ []byte, _ int) {
 	c.Messaged = true
 }
 
@@ -31,7 +31,8 @@ func TestClient_RegisterChannelCallbacks(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			rw := &wsMock{
+			rw := &wsReadMock{
+				Welcomed:    false,
 				ReadLimit:   1,
 				ReadPayload: []byte(tc.payload),
 			}

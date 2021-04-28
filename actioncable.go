@@ -21,6 +21,9 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 }
 
 func (ac *Client) Run() error {
+	if err := ac.waitWelcome(); err != nil {
+		return err
+	}
 	go ac.send()
 	if err := ac.receive(); err != nil {
 		ac.exit()

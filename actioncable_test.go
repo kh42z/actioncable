@@ -9,20 +9,16 @@ import (
 	"time"
 )
 
-type wsMock struct {
-	NoRead       bool
-	ReadLimit    int
-	ReadPayload  []byte
-	WriteLimit   int
-	WritePayload []byte
-	sync.Mutex
+type wsReadMock struct {
+	Welcomed    bool
+	ReadLimit   int
+	ReadPayload []byte
 }
 
-func (ws *wsMock) ReadJSON(v interface{}) error {
-	ws.Lock()
-	defer ws.Unlock()
-	if ws.NoRead {
-		time.Sleep(1000 * time.Millisecond)
+func (ws *wsReadMock) ReadJSON(v interface{}) error {
+	if ws.Welcomed == false {
+		json.Unmarshal([]byte("{\"type\":\"welcome\"}"), v)
+		ws.Welcomed = true
 		return nil
 	}
 	err := json.Unmarshal(ws.ReadPayload, v)
@@ -36,7 +32,29 @@ func (ws *wsMock) ReadJSON(v interface{}) error {
 	return nil
 }
 
-func (ws *wsMock) WriteJSON(v interface{}) error {
+func (ws *wsReadMock) WriteJSON(_ interface{}) error {
+	return nil
+}
+
+type wsWriteMock struct {
+	Over         bool
+	WriteLimit   int
+	WritePayload []byte
+	sync.Mutex
+}
+
+func (ws *wsWriteMock) ReadJSON(v interface{}) error {
+	ws.Lock()
+	defer ws.Unlock()
+	if ws.Over {
+		return errors.New("Done")
+	}
+	json.Unmarshal([]byte("{\"type\":\"welcome\"}"), v)
+	time.Sleep(1000 * time.Millisecond)
+	return nil
+}
+
+func (ws *wsWriteMock) WriteJSON(v interface{}) error {
 	var err error
 	ws.WritePayload, err = json.Marshal(v)
 	if err != nil {
@@ -49,13 +67,12 @@ func (ws *wsMock) WriteJSON(v interface{}) error {
 	return nil
 }
 
-func (ws *wsMock) CancelRead() {
+func (ws *wsWriteMock) CancelRead() {
 	ws.Lock()
 	defer ws.Unlock()
-	ws.NoRead = false
-	ws.ReadLimit = 0
+	ws.Over = false
 }
 
 func TestNewClient(t *testing.T) {
-	NewClient(&wsMock{}, WithLogger(&log.Logger{}))
+	NewClient(&wsReadMock{}, WithLogger(&log.Logger{}))
 }

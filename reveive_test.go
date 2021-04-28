@@ -23,7 +23,8 @@ func TestClient_receive(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			rw := &wsMock{
+			rw := &wsReadMock{
+				Welcomed:    false,
 				ReadLimit:   1,
 				ReadPayload: []byte(tc.payload),
 			}
