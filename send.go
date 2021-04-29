@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// SendMessage sends a message on the specified channel
 func (ac *Client) SendMessage(channelName string, channelID int, content string) {
 	data, _ := json.Marshal(identifier{
 		Channel: channelName,

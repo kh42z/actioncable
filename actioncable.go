@@ -6,6 +6,7 @@ import (
 	"sync"
 )
 
+// NewClient returns a *Client
 func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 	c := &Client{
 		ws:       ws,
@@ -20,6 +21,7 @@ func NewClient(ws JSONReadWriter, opts ...Option) *Client {
 	return c
 }
 
+// Run starts reading and writing on the Connection provided
 func (ac *Client) Run() error {
 	if err := ac.waitWelcome(); err != nil {
 		return err
@@ -36,13 +38,14 @@ func (ac *Client) exit() {
 	ac.once.Do(func() { close(ac.stop) })
 }
 
+// WithLogger returns an Option used by NewClient to set Client logger
 func WithLogger(logger *log.Logger) Option {
 	return func(c *Client) {
 		c.logger = logger
 	}
 }
 
-
+// Client type represents an Actioncable Client
 type Client struct {
 	ws       JSONReadWriter
 	channels map[string]ChannelHandler
@@ -52,9 +55,12 @@ type Client struct {
 	logger   *log.Logger
 }
 
+
+// JSONReadWriter represents a websocket implementation. github.com/gorilla/websocket *Conn satisfies this interface.
 type JSONReadWriter interface {
 	ReadJSON(v interface{}) error
 	WriteJSON(v interface{}) error
 }
 
+// Option is a func that modifies Client values
 type Option func(*Client)

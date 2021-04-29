@@ -14,10 +14,13 @@ func formatSubscribeMessage(channel string, ID int, cmd string) *message {
 		Identifier: string(data),
 	}
 }
+
+// Subscribe starts following a channel
 func (ac *Client) Subscribe(channel string, ID int) {
 	ac.emit <- formatSubscribeMessage(channel, ID, "subscribe")
 }
 
+// Unsubscribe stops following a channel
 func (ac *Client) Unsubscribe(channel string, ID int) {
 	ac.emit <- formatSubscribeMessage(channel, ID, "unsubscribe")
 }

@@ -4,11 +4,15 @@ import (
 	"encoding/json"
 )
 
+// ChannelHandler is an interface designed to handle events sent by an ActionCable Server on a specific Channel ("ChatroomChannel" for example).
+// SubscriptionHandler is triggered by a successful subscribe on a channel
+// MessageHandler is triggered by a message received on a channel
 type ChannelHandler interface {
 	SubscriptionHandler(*Client, int)
 	MessageHandler(*Client, []byte, int)
 }
 
+// AddChannelHandler adds handlers for channel ("UserChannel" for example)
 func (ac *Client) AddChannelHandler(name string, event ChannelHandler) {
 	ac.channels[name] = event
 }

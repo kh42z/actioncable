@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/kh42z/actioncable"
 	"github.com/gorilla/websocket"
+	"github.com/kh42z/actioncable"
 	"log"
 )
 
 func main() {
+
 	ws, _, err := websocket.DefaultDialer.Dial("ws://localhost:3000/cable", nil)
 	if err != nil {
 		log.Fatalln("unable to connect ", err)
@@ -18,7 +19,7 @@ func main() {
 		c.Subscribe("UserChannel", 1)
 	}()
 	if err := c.Run(); err != nil {
-		log.Fatal("Actioncable: ", err)
+		log.Println("Actioncable: ", err)
 	}
 }
 
