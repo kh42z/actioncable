@@ -55,7 +55,6 @@ type Client struct {
 	logger   *log.Logger
 }
 
-
 // JSONReadWriter represents a websocket implementation. github.com/gorilla/websocket *Conn satisfies this interface.
 type JSONReadWriter interface {
 	ReadJSON(v interface{}) error

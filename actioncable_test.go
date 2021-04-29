@@ -38,8 +38,8 @@ func (ws *wsReadMock) WriteJSON(_ interface{}) error {
 type wsWriteMock struct {
 	WriteLimit   int
 	WritePayload []byte
-	Welcomed 	 bool
-	Over		 chan struct{}
+	Welcomed     bool
+	Over         chan struct{}
 }
 
 func (ws *wsWriteMock) ReadJSON(v interface{}) error {
@@ -48,7 +48,7 @@ func (ws *wsWriteMock) ReadJSON(v interface{}) error {
 		ws.Welcomed = true
 		return nil
 	}
-	<- ws.Over
+	<-ws.Over
 	return nil
 }
 
