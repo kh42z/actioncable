@@ -8,8 +8,8 @@ import (
 // SubscriptionHandler is triggered by a successful subscribe on a channel
 // MessageHandler is triggered by a message received on a channel
 type ChannelHandler interface {
-	SubscriptionHandler(*Client, int)
-	MessageHandler(*Client, []byte, int)
+	SubscriptionHandler(c *Client, channelId int)
+	MessageHandler(c *Client, message []byte, channelId int)
 }
 
 // AddChannelHandler adds handlers for channel ("UserChannel" for example)
