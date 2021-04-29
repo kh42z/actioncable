@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 )
 
-func formatSubscribeMessage(channel string, ID int, cmd string) *message {
+func formatSubscribeMessage(channel string, id int, cmd string) *message {
 	data, _ := json.Marshal(identifier{
 		Channel: channel,
-		ID:      ID,
+		ID:      id,
 	})
 	return &message{
 		Command:    cmd,
@@ -16,11 +16,11 @@ func formatSubscribeMessage(channel string, ID int, cmd string) *message {
 }
 
 // Subscribe starts following a channel
-func (ac *Client) Subscribe(channel string, ID int) {
-	ac.emit <- formatSubscribeMessage(channel, ID, "subscribe")
+func (ac *Client) Subscribe(channel string, id int) {
+	ac.emit <- formatSubscribeMessage(channel, id, "subscribe")
 }
 
 // Unsubscribe stops following a channel
-func (ac *Client) Unsubscribe(channel string, ID int) {
-	ac.emit <- formatSubscribeMessage(channel, ID, "unsubscribe")
+func (ac *Client) Unsubscribe(channel string, id int) {
+	ac.emit <- formatSubscribeMessage(channel, id, "unsubscribe")
 }
