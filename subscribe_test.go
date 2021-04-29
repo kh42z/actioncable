@@ -19,7 +19,8 @@ func TestClientSubscribe(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			rw := &wsWriteMock{
 				WriteLimit: 1,
-				Over:       false,
+				Over:       make(chan struct{}),
+				Welcomed:   false,
 			}
 			c := NewClient(rw)
 			go c.Run()
@@ -50,7 +51,8 @@ func TestClientUnSubscribe(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			rw := &wsWriteMock{
 				WriteLimit: 1,
-				Over:       false,
+				Over:       make(chan struct{}),
+				Welcomed:   false,
 			}
 			c := NewClient(rw)
 			go c.Run()

@@ -42,6 +42,7 @@ func WithLogger(logger *log.Logger) Option {
 	}
 }
 
+
 type Client struct {
 	ws       JSONReadWriter
 	channels map[string]ChannelHandler

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
-	"sync"
 	"testing"
 	"time"
 )
@@ -37,19 +36,19 @@ func (ws *wsReadMock) WriteJSON(_ interface{}) error {
 }
 
 type wsWriteMock struct {
-	Over         bool
 	WriteLimit   int
 	WritePayload []byte
-	sync.Mutex
+	Welcomed 	 bool
+	Over		 chan struct{}
 }
 
 func (ws *wsWriteMock) ReadJSON(v interface{}) error {
-	ws.Lock()
-	defer ws.Unlock()
-	if ws.Over {
-		return errors.New("Done")
+	if !ws.Welcomed {
+		json.Unmarshal([]byte("{\"type\":\"welcome\"}"), v)
+		ws.Welcomed = true
+		return nil
 	}
-	json.Unmarshal([]byte("{\"type\":\"welcome\"}"), v)
+	<- ws.Over
 	return nil
 }
 
@@ -76,9 +75,7 @@ func (ws *wsWriteMock) WaitForWrite() {
 }
 
 func (ws *wsWriteMock) CancelRead() {
-	ws.Lock()
-	defer ws.Unlock()
-	ws.Over = true
+	close(ws.Over)
 }
 
 func TestNewClient(t *testing.T) {
